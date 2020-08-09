@@ -19,7 +19,8 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('features/', include('features.urls')),
+    # include('features.urls', namespace= 'features')
+    path('graph/', include('graph.urls')),
     #path('', include('features.urls')),
 
     path('', views.dashboard, name='dashboard'),

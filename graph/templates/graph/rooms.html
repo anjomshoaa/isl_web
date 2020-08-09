@@ -1,0 +1,55 @@
+{% extends "isl/base_site.html" %}
+
+
+{% block content %}
+
+{% if rooms %}
+<div class="row">
+{% for room, props in rooms.items %}
+  <div class="col-lg-6">
+
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">{{ room }}</h6>
+      </div>
+      <div class="card-body">
+        <table>
+        {% for name, val in props %}
+        <tr>
+          <td> {{ name }} </td>
+          <td><code> {{ val }}</code></td>
+        </tr>
+        {% endfor %}
+        </table>
+
+        <a href="graph{{room}}/sensors" class="btn btn-danger btn-icon-split float-right">
+          <span class="icon text-white-50">
+            <i class="fas fa-search"></i>
+          </span>
+          <span class="text">Sensors</span>
+        </a>
+
+      </div>
+
+
+
+
+</div>
+
+
+    </div>
+
+
+{% if not forloop.counter0|divisibleby:2 %}
+</div>
+<div class="row">
+{% endif %}
+
+
+
+{% endfor %}
+</div>
+
+{% endif %}
+
+{% endblock %}

@@ -9,12 +9,10 @@ from utils.cayley import CayleyClient
 
 def dashboard(request):
 
-    client=CayleyClient()
+    client = CayleyClient()
 
-    latest_question_list = ['Q1', 'Q2', 'Q3']
     context = {
-        'latest_question_list': latest_question_list,
-        'title': 'Space Information',
+        'title': 'Basic statistics',
         'no_rooms': client.count('room'),
         'no_models': client.count('model'),
         'no_features': client.count('feature')
