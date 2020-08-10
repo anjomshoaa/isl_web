@@ -1,0 +1,35 @@
+{% extends "isl/base_site.html" %}
+
+
+{% block content %}
+
+<div class="row">
+{% for sensor in sensors %}
+
+<!-- Sensor Card -->
+<div class="col-xl-3 col-md-6 mb-4">
+  <div class="card border-left-danger shadow h-100 py-2">
+    <div class="card-body">
+      <div class="row no-gutters align-items-center">
+        <div class="col mr-2">
+          <div class="h5 mb-0 font-weight-bold text-gray-800">{{ sensor.sensor_name }}</div>
+          <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{ sensor.sensor_id }}</div>
+
+
+        </div>
+        <div class="col-auto">
+
+          <a href="/data/{{ sensor.csv_file }}" class="btn btn-success btn-circle">
+            <i class="fas fa-table"></i>
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endfor %}
+</div>
+{% endblock %}

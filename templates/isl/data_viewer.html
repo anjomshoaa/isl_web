@@ -1,0 +1,22 @@
+{% extends "isl/base_site.html" %}
+
+
+{% block content %}
+
+First 100 records.
+
+<table border="1px">
+		{% for data in data_frame %}
+			<th>{{ data }}</th>
+		{% endfor %}
+
+		{% for _, record in data_frame.iterrows %}
+			<tr>
+				{% for value in record %}
+					<td>{{ value }}</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+</table>
+
+{% endblock %}

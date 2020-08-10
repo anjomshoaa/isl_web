@@ -6,7 +6,10 @@ class CayleyClient:
     entities = {
         'room': '<brick:Room>',
         'feature': '<mls:Feature>',
-        'model': '<mls:Model>'
+        'model': '<mls:Model>',
+        'dataset': '<mls:Dataset>',
+        'task': '<mls:Task>',
+        'run': '<mls:Run>',
     }
 
     def __init__(self, url="http://localhost:64210"):
@@ -44,17 +47,33 @@ class CayleyClient:
                 entity_id = entity.split(':')[1][:-1]
 
                 if entity_id not in entities:
-                    entities[entity_id] = {}
+                    entities[entity_id] = {'properties': []}
 
-                entities[entity_id][property] = value
+                entities[entity_id]['properties'].append([property, value])
+                #append({'property': property, 'value': value})
 
+        #print(entities)
         # sort on property names
         for entity_id in entities:
-            entities[entity_id] = sorted(entities[entity_id].items())
+            properties = entities[entity_id]['properties']
+            entities[entity_id]['properties'] = sorted(properties, key=lambda rec: rec[0])
 
         return entities
 
 
-    def list_rooms(self):
-        room_info = self.__get_instances("<brick:Room>")
-        return room_info
+    def list_entities(self, entity_name):
+        return self.__get_instances(self.entities[entity_name])
+
+    def room_sensors(self, room_id):
+        query = """
+            g.V('<brick:Sensor>')
+                .in('<rdfs:subClassOf>').tag("sensor_type")
+	            .out('<rdfs:label>').tag('sensor_name')
+	            .back('sensor_type')
+	            .in('<rdf:type>')
+                .has('<bf:isPointOf>', '<isl:/{}>').tag("sensor_id")
+                .out('<bf:hasMeasurement>').tag('csv_file').all()
+        """
+
+        resp = requests.post(self.url, data=query.format(room_id).encode('utf-8'))
+        return resp.json()['result']

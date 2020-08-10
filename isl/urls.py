@@ -24,6 +24,8 @@ urlpatterns = [
     #path('', include('features.urls')),
 
     path('', views.dashboard, name='dashboard'),
+    path('data/<str:file_name>', views.data_viewer, name='data_viewer'),
+    path('model/<str:file_name>', views.model_viewer, name='model_viewer'),
 
     path('admin/', admin.site.urls),
     #path('admin/doc/', include('django.contrib.admindocs.urls')),

@@ -9,52 +9,52 @@ from utils.cayley import CayleyClient
 
 
 def rooms(request):
-    latest_question_list = ['Q1', 'Q2', 'Q3']
 
     client = CayleyClient()
 
     context = {
-        'rooms': client.list_rooms(),
+        'rooms': client.list_entities('room'),
         'title': 'Space information',
     }
     return render(request, 'graph/rooms.html', context)
 
 
-"""
-var sensor_path = g.Morphism()
-.in('<rdfs:subClassOf>')
-	.tag("name")
-.in('<rdf:type>');
 
-g.V('<brick:Sensor>')
-.in('<rdfs:subClassOf>')
-	.tag("sensor_type")
-	.out('<rdfs:label>')
-	.tag('sensor_name')
-	.back('sensor_type')
+def sensors(request, room_id):
 
-	.in('<rdf:type>')
-.has('<bf:isPointOf>', '<isl:/rooms/1>')
-	.tag("sensor_id")
+    client = CayleyClient()
 
-	.out('<bf:hasMeasurement>')
-	.tag('csv_file')
-	.all()
-"""
+    context = {
+        'sensors': client.room_sensors(room_id),
+        'title': 'Sensors in <' + room_id + '>',
+    }
+    return render(request, 'graph/sensors.html', context)
 
 
+def entities(request, entity_type):
 
-"""
-g.V('<isl:/rooms/2>').out(null, "pred").all()
-
-
-g.V("<brick:Room>").in("<rdf:type>").ForEach(function(v) {
-  //g.emit(v.room)
-  var props = g.V(v.id).out(null, "pred").ToArray()
-  var node = {"room": v.id, "props": props}
-  g.emit(node)
-})
+    client = CayleyClient()
+    entities = client.list_entities(entity_type)
 
 
+    # add entity-specific buttons
+    if entity_type == 'model':
+        for name, data in entities.items():
+            data['buttons'] = []
+            hyperlink = ''
+            for prop in data['properties']:
+                if prop[0] == '<dcterms:identifier>':
+                    data['buttons'].append(['View model', '/model/'+prop[1]])
 
-"""
+    if entity_type == 'room':
+        for name, data in entities.items():
+            data['buttons'] = [['Sensors', '/graph' + name + '/sensors' ]]
+
+
+    print(entities)
+
+    context = {
+        'entities': entities,
+        'title': entity_type.capitalize() + ' information',
+    }
+    return render(request, 'graph/entities.html', context)
