@@ -1,0 +1,42 @@
+{% extends "isl/base_site.html" %}
+{% load static %}
+
+
+{% block content %}
+
+<!-- div class="row" -->
+
+	<div class="col-xl-12 col-lg-7">
+
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<h6 class="m-0 font-weight-bold text-primary">Live Sensor Data</h6>
+			</div>
+			<div class="card-body">
+				<div class="chart-area">
+					<canvas id="myAreaChart"></canvas>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+{% endblock %}
+
+
+{% block extrascript %}
+
+
+	<script>
+
+		var MQTTbroker = '192.168.0.115';
+    var MQTTport = 9001;
+    var MQTTsubTopic = '/temperature';
+
+	</script>
+
+	<script src="{% static "vendor/chart.js/Chart.bundle.min.js" %}"></script>
+	<script src="{% static "vendor/paho/paho-mqtt-min.js" %}"></script>
+	<script src="{% static "js/chart_viewer.js" %}"></script>
+
+{% endblock %}

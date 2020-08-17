@@ -37,6 +37,14 @@ def data_viewer(request, file_name):
     return render(request, 'isl/data_viewer.html', context)
 
 
+def chart_viewer(request):
+
+    context = {
+        'title': 'Sensor data stream',
+    }
+    return render(request, 'isl/chart_viewer.html', context)
+
+
 def model_viewer(request, file_name):
 
     MODEL_PATH = '/Users/amin/pyworks/notebooks/isl_occupancy/'
