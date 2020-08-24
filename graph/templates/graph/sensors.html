@@ -2,6 +2,7 @@
 
 {% block content %}
 
+
 <div class="row">
 {% for sensor in sensors %}
 
@@ -17,10 +18,16 @@
 
         </div>
         <div class="col-auto">
+          {% if sensor.stream %}
+            <a href="/chart/{{ sensor.resource }}" class="btn btn-warning btn-circle">
+              <i class="fas fa-chart-line"></i>
+            </a>
+          {% else %}
+            <a href="/data/{{ sensor.resource }}" class="btn btn-success btn-circle">
+              <i class="fas fa-table"></i>
+            </a>
 
-          <a href="/data/{{ sensor.csv_file }}" class="btn btn-success btn-circle">
-            <i class="fas fa-table"></i>
-          </a>
+          {% endif %}
 
         </div>
       </div>

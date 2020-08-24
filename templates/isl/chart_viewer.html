@@ -29,9 +29,9 @@
 
 	<script>
 
-		var MQTTbroker = '192.168.0.115';
-    var MQTTport = 9001;
-    var MQTTsubTopic = '/temperature';
+		var MQTTbroker = '{{ mqtt_broker }}';
+    var MQTTport = {{ mqtt_port }};
+    var MQTTsubTopic = '{{ mqtt_topic }}';
 
 	</script>
 

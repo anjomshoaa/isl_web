@@ -37,11 +37,18 @@ def data_viewer(request, file_name):
     return render(request, 'isl/data_viewer.html', context)
 
 
-def chart_viewer(request):
+def chart_viewer(request, mqtt_url):
 
+    broker, tail = mqtt_url.replace('ws://', '').split(':')
+    port, topic = tail.split('/', 2)
+    print(broker, tail, port, topic)
     context = {
         'title': 'Sensor data stream',
+        'mqtt_broker': broker,
+        'mqtt_port': port,
+        'mqtt_topic': '/'+topic
     }
+
     return render(request, 'isl/chart_viewer.html', context)
 
 

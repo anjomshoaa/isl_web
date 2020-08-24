@@ -72,7 +72,7 @@ class CayleyClient:
 	            .back('sensor_type')
 	            .in('<rdf:type>')
                 .has('<bf:isPointOf>', '<isl:/{}>').tag("sensor_id")
-                .out('<bf:hasMeasurement>').tag('csv_file').all()
+                .out('<bf:hasMeasurement>').tag('resource').all()
         """
 
         resp = requests.post(self.url, data=query.format(room_id).encode('utf-8'))

@@ -24,8 +24,12 @@ def sensors(request, room_id):
 
     client = CayleyClient()
 
+    sensors = client.room_sensors(room_id)
+    for sensor in sensors:
+        sensor['stream'] = ('ws://' in sensor['resource'])
+
     context = {
-        'sensors': client.room_sensors(room_id),
+        'sensors': sensors,
         'title': 'Sensors in <' + room_id + '>',
     }
     return render(request, 'graph/sensors.html', context)
