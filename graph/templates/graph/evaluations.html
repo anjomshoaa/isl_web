@@ -1,0 +1,82 @@
+{% extends "isl/base_site.html" %}
+{% load static %}
+
+
+{% block content %}
+
+<!-- div class="row" -->
+
+	<div class="col-xl-12 col-lg-7">
+
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<h6 class="m-0 font-weight-bold text-primary">Model Evaluations</h6>
+			</div>
+			<div class="card-body">
+        <canvas id="metric_1"></canvas>
+			</div>
+		</div>
+
+	</div>
+
+{% endblock %}
+
+
+{% block extrascript %}
+
+  <script src="{% static "vendor/chart.js/Chart.bundle.min.js" %}"></script>
+	<script>
+
+  var config = {
+    type: 'scatter',
+
+
+    data: {
+      labels: {{labels | safe}},
+      //["Model 1", "Model 2", "Model 3"],
+
+        datasets: [{
+            label: 'Scatter Dataset',
+            //data: [{x: 5, y: 0, run: 'run 0'}, {x: 15, y: 0, run: 'run 1'}, {x: 10, y: 2, run: 'run 2'}]
+            data: {{data | safe}}
+        }]
+    },
+    options: {
+
+        scales: {
+            xAxes: [{
+                type: 'linear',
+                position: 'bottom'
+            }],
+
+
+            yAxes: [{
+                type: 'category',
+            }],
+          },
+
+
+          tooltips: {
+             callbacks: {
+                label: function(tooltipItem, data) {
+                   //var label = data.labels[tooltipItem.index];
+                   var run = data.datasets[tooltipItem.datasetIndex]['data'][tooltipItem.index]['run'];
+                   //return label + ': (' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ')'+r+data;
+                   return   '['+tooltipItem.value+', '+ run+']: '+tooltipItem.label;
+                }
+             }
+          }
+
+    }
+};
+
+
+        window.onload = function() {
+          var ctx = document.getElementById('metric_1').getContext('2d');
+          window.scatter = new Chart(ctx, config);
+        };
+
+	</script>
+
+
+{% endblock %}

@@ -19,6 +19,33 @@ def rooms(request):
     return render(request, 'graph/rooms.html', context)
 
 
+def evaluations(request):
+
+    client = CayleyClient()
+    task_name = 'occupancy_task'
+    results = client.task_evaluations(task_name)
+
+    metric_evals = results['MeanSquaredError']
+
+    # model names as labels
+    labels = list({elm['y'] for elm in metric_evals})
+    print(metric_evals)
+    print("#####", labels)
+
+
+    context = {
+        'title': 'Task Evaluation: ' + task_name,
+        'data': metric_evals,
+        'labels': labels
+        #'data': [{'x': 5, 'y': 'Model 2', 'run': 'run 0'}, {'x': 15, 'y': 'Model 1', 'run': 'run 1'}, {'x': 10, 'y': 'Model 2', 'run': 'run 2'}]
+        #'data': [10, 20, 30],
+        #'labels': ['A', 'B', 'C']
+
+    }
+    return render(request, 'graph/evaluations.html', context)
+
+
+
 
 def sensors(request, room_id):
 
