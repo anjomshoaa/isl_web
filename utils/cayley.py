@@ -15,9 +15,6 @@ class CayleyClient:
     def __init__(self, url="http://localhost:64210"):
         self.url = "{}/api/v1/query/gizmo".format(url)
 
-    def __clean_name(self, entity, length=-1):
-        return entity.split(':')[1][:length]
-
     def count(self, entity_name):
         query = """
             var x = g.V().has('<rdf:type>','{}').count();
@@ -87,6 +84,7 @@ class CayleyClient:
             g.V('<isl:{}>')
             .in('<mls:achieves>').tag('run_id')
             .out('<mls:hasInput>').has('<rdf:type>','<mls:Model>').tag('model_id')
+            .back('run_id').out('<mls:realizes>').tag('learning_task')
             .back('run_id').out('<mls:hasOutput>').has('<rdf:type>','<mls:ModelEvaluation>')
             .out('<mls:specifiedBy>').tag('eval_item')
             .out('<rdf:type>').tag('metric_name')
@@ -95,25 +93,4 @@ class CayleyClient:
         """
 
         resp = requests.post(self.url, data=query.format(task_id).encode('utf-8'))
-        evals={}
-
-		#"metric_name": "<mls:MeanSquaredError>",
-		#"metric_value": "\"21.834674835205078\"^^<xsd:float>",
-		#"model_id": "<isl:model_24e6a2b6b9c64aec9605bc00b2ed3b5a>",
-		#"run_id": "<isl:run_7be65ff944404a38be97030b6c8c4df7>"
-
-        for elm in resp.json()['result']:
-
-            name = self.__clean_name(elm['metric_name'])
-            val = float(elm['metric_value'].split('"')[1])
-
-            if name not in evals:
-                evals[name] = []
-
-            evals[name].append({
-                'x': val,
-                'y': self.__clean_name(elm['model_id'], 9),
-                'run': self.__clean_name(elm['run_id'], 7)
-            })
-
-        return evals
+        return resp.json()['result']

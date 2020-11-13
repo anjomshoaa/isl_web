@@ -7,6 +7,8 @@ from django.shortcuts import render
 from utils.cayley import CayleyClient
 
 
+def clean_name(entity, length=-1):
+    return entity.split(':')[1][:length]
 
 def rooms(request):
 
@@ -25,22 +27,42 @@ def evaluations(request):
     task_name = 'occupancy_task'
     results = client.task_evaluations(task_name)
 
-    metric_evals = results['MeanSquaredError']
+    evals={}
+    labels = []
 
-    # model names as labels
-    labels = list({elm['y'] for elm in metric_evals})
-    print(metric_evals)
-    print("#####", labels)
+    for elm in results:
+
+        name = clean_name(elm['metric_name'])
+        model_id = clean_name(elm['model_id'], 9)
+        learning_task = clean_name(elm['learning_task'])
+        val = float(elm['metric_value'].split('"')[1])
+
+        labels.append(model_id)
+
+        if name not in evals:
+            evals[name] = {}
+
+        if learning_task not in evals[name]:
+            evals[name][learning_task] = []
+
+        evals[name][learning_task].append({
+            'x': val,
+            'y': model_id,
+            'run': clean_name(elm['run_id'], 7)
+        })
+
+
+    metrics = {}
+    for metric_name, learning_tasks in evals.items():
+        metrics[metric_name] = []
+        for task, data in learning_tasks.items():
+            metrics[metric_name].append({'label': task, 'data': data})
 
 
     context = {
         'title': 'Task Evaluation: ' + task_name,
-        'data': metric_evals,
-        'labels': labels
-        #'data': [{'x': 5, 'y': 'Model 2', 'run': 'run 0'}, {'x': 15, 'y': 'Model 1', 'run': 'run 1'}, {'x': 10, 'y': 'Model 2', 'run': 'run 2'}]
-        #'data': [10, 20, 30],
-        #'labels': ['A', 'B', 'C']
-
+        'labels': list(set(labels)),
+        'metrics': metrics
     }
     return render(request, 'graph/evaluations.html', context)
 

@@ -4,58 +4,54 @@
 
 {% block content %}
 
-<!-- div class="row" -->
+<div class="col-xl-12 col-lg-7">
 
-	<div class="col-xl-12 col-lg-7">
+
+{% for metric_name, data0 in metrics.items %}
 
 		<div class="card shadow mb-4">
 			<div class="card-header py-3">
-				<h6 class="m-0 font-weight-bold text-primary">Model Evaluations</h6>
+				<h6 class="m-0 font-weight-bold text-primary">{{metric_name}}</h6>
 			</div>
 			<div class="card-body">
-        <canvas id="metric_1"></canvas>
+        <canvas id="chart_{{metric_name}}"></canvas>
 			</div>
 		</div>
 
-	</div>
+{% endfor %}
+
+</div>
 
 {% endblock %}
 
 
 {% block extrascript %}
 
-  <script src="{% static "vendor/chart.js/Chart.bundle.min.js" %}"></script>
-	<script>
+<script src="{% static "vendor/chart.js/Chart.bundle.min.js" %}"></script>
+<script>
 
-  var config = {
-    type: 'scatter',
+  $(function () {
 
+{% for metric_name, datasets in metrics.items %}
 
-    data: {
-      labels: {{labels | safe}},
-      //["Model 1", "Model 2", "Model 3"],
+    var ctx_{{metric_name}} = document.getElementById('chart_{{metric_name}}').getContext('2d');
 
-        datasets: [{
-            label: 'Scatter Dataset',
-            //data: [{x: 5, y: 0, run: 'run 0'}, {x: 15, y: 0, run: 'run 1'}, {x: 10, y: 2, run: 'run 2'}]
-            data: {{data | safe}}
-        }]
-    },
-    options: {
+    var config_{{metric_name}} = {
+      type: 'scatter',
+      data: {
+        labels: {{labels | safe}},
+        datasets: {{datasets | safe}}
 
+          //[{
+          //    label: 'Scatter Dataset',
+          //    data: {{data | safe}}
+          //}]
+      },
+      options: {
         scales: {
-            xAxes: [{
-                type: 'linear',
-                position: 'bottom'
-            }],
-
-
-            yAxes: [{
-                type: 'category',
-            }],
+          xAxes: [{type: 'linear', position: 'bottom'}],
+          yAxes: [{type: 'category'}],
           },
-
-
           tooltips: {
              callbacks: {
                 label: function(tooltipItem, data) {
@@ -66,16 +62,15 @@
                 }
              }
           }
+        }
+    };
 
-    }
-};
+    var chart_{{metric_name}} = new Chart(ctx_{{metric_name}}, config_{{metric_name}});
 
 
-        window.onload = function() {
-          var ctx = document.getElementById('metric_1').getContext('2d');
-          window.scatter = new Chart(ctx, config);
-        };
+{% endfor %}
 
+  });
 	</script>
 
 
