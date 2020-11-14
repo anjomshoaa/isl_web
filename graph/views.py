@@ -21,14 +21,14 @@ def rooms(request):
     return render(request, 'graph/rooms.html', context)
 
 
-def evaluations(request):
+def evaluations(request, task_name):
 
     client = CayleyClient()
-    task_name = 'occupancy_task'
+    #task_name = 'occupancy_task'
     results = client.task_evaluations(task_name)
 
     evals={}
-    labels = []
+    labels = ['']
 
     for elm in results:
 
@@ -48,16 +48,24 @@ def evaluations(request):
         evals[name][learning_task].append({
             'x': val,
             'y': model_id,
-            'run': clean_name(elm['run_id'], 7)
+            'meta': '{' + model_id + ', ' + clean_name(elm['run_id'], 7) + '}'
         })
 
-
+    colors = ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(75, 192, 192)']
     metrics = {}
     for metric_name, learning_tasks in evals.items():
         metrics[metric_name] = []
+        ind = 0
         for task, data in learning_tasks.items():
-            metrics[metric_name].append({'label': task, 'data': data})
-
+            metrics[metric_name].append({
+                'label': task,
+                'data': data,
+                'pointRadius': 8,
+                'pointHoverRadius': 10,
+                'backgroundColor': colors[ind],
+                'borderColor': '0x000000'
+                })
+            ind+=1
 
     context = {
         'title': 'Task Evaluation: ' + task_name,
@@ -102,6 +110,10 @@ def entities(request, entity_type):
     if entity_type == 'room':
         for name, data in entities.items():
             data['buttons'] = [['Sensors', '/graph' + name + '/sensors' ]]
+
+    if entity_type == 'task':
+        for name, data in entities.items():
+            data['buttons'] = [['Evaluations', '/graph/task/' + name + '/evaluations' ]]
 
 
     print(entities)

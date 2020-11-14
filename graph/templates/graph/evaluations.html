@@ -32,7 +32,10 @@
 
   $(function () {
 
+
 {% for metric_name, datasets in metrics.items %}
+
+    color = {{ forloop.counter0 }}
 
     var ctx_{{metric_name}} = document.getElementById('chart_{{metric_name}}').getContext('2d');
 
@@ -41,24 +44,30 @@
       data: {
         labels: {{labels | safe}},
         datasets: {{datasets | safe}}
-
-          //[{
-          //    label: 'Scatter Dataset',
-          //    data: {{data | safe}}
-          //}]
       },
       options: {
+        /*
+        onClick: function(event,elements) {
+          window.alert('redirect to run!');
+      },*/
         scales: {
           xAxes: [{type: 'linear', position: 'bottom'}],
-          yAxes: [{type: 'category'}],
+          yAxes: [{
+            type: 'category',
+            ticks: {
+              beginAtZero:false,
+              min: ''
+            }
+
+          }],
+
+
           },
           tooltips: {
              callbacks: {
                 label: function(tooltipItem, data) {
-                   //var label = data.labels[tooltipItem.index];
-                   var run = data.datasets[tooltipItem.datasetIndex]['data'][tooltipItem.index]['run'];
-                   //return label + ': (' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ')'+r+data;
-                   return   '['+tooltipItem.value+', '+ run+']: '+tooltipItem.label;
+                   var meta = data.datasets[tooltipItem.datasetIndex]['data'][tooltipItem.index]['meta'];
+                   return meta + ' --> ' + Math.round(tooltipItem.label * 100) / 100;
                 }
              }
           }

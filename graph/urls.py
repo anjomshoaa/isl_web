@@ -8,7 +8,7 @@ from . import views
 urlpatterns = [
     path('', views.rooms, name='rooms'),
 
-    path('task/evaluations', views.evaluations, name='evaluations'),
+    path('task/<str:task_name>/evaluations', views.evaluations, name='evaluations'),
 
     #path('rooms/', views.rooms, name='rooms'),
     path('<path:room_id>/sensors', views.sensors, name='sensors'),
