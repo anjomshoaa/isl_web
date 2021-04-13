@@ -1,0 +1,10 @@
+{% extends "isl/base_site.html" %}
+
+
+{% block content %}
+
+		{% for account in accounts %}
+			<h2>{{ account }}</h2>
+		{% endfor %}
+
+{% endblock %}

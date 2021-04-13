@@ -123,3 +123,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 #STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static/"),)
+
+
+W3_PROVIDER = 'http://127.0.0.1:8545'
+# Index of account in test network
+ACCOUNT_INDEX = 0
+CONTRACT_FILE = '/Users/amin/nodeworks/eth-test/build/contracts/ISL.json'

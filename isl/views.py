@@ -4,11 +4,12 @@ from django.shortcuts import render
 #from django.template import loader
 #from .models import Question
 
+import isl.settings as settings
 from utils.cayley import CayleyClient
 
 import pandas as pd
 import tensorflow as tf
-
+from web3 import Web3
 
 def dashboard(request):
 
@@ -54,7 +55,7 @@ def chart_viewer(request, mqtt_url):
 
 def model_viewer(request, file_name):
 
-    MODEL_PATH = '/Users/amin/pyworks/notebooks/isl_occupancy/'
+    MODEL_PATH = '/Users/amin/pyworks/notebooks/isl_occupancy/model/'
     #clean_name = file_name.split(':')[1][:-1]
     print(MODEL_PATH + file_name)
 
@@ -65,3 +66,11 @@ def model_viewer(request, file_name):
         'model_summary': tf_model.to_json()
     }
     return render(request, 'isl/model_viewer.html', context)
+
+
+def account_viewer(request):
+    provider = Web3(Web3.HTTPProvider(settings.W3_PROVIDER))
+    context = {
+        'accounts': provider.eth.accounts
+        }
+    return render(request, 'isl/account_viewer.html', context)

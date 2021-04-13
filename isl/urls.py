@@ -28,6 +28,8 @@ urlpatterns = [
     path('model/<str:file_name>', views.model_viewer, name='model_viewer'),
     path('chart/<path:mqtt_url>', views.chart_viewer, name='chart_viewer'),
 
+    path('accounts', views.account_viewer, name='account_viewer'),
+
     path('admin/', admin.site.urls),
     #path('admin/doc/', include('django.contrib.admindocs.urls')),
 ]

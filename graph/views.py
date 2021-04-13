@@ -105,7 +105,7 @@ def entities(request, entity_type):
             hyperlink = ''
             for prop in data['properties']:
                 if prop[0] == '<dcterms:identifier>':
-                    data['buttons'].append(['View model', '/model/'+prop[1]])
+                    data['buttons'].append(['View model', '/'+prop[1]])
 
     if entity_type == 'room':
         for name, data in entities.items():
@@ -115,8 +115,6 @@ def entities(request, entity_type):
         for name, data in entities.items():
             data['buttons'] = [['Evaluations', '/graph/task/' + name + '/evaluations' ]]
 
-
-    print(entities)
 
     context = {
         'entities': entities,
